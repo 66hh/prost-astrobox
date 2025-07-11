@@ -131,7 +131,7 @@ fn try_message(input: TokenStream) -> Result<TokenStream, Error> {
         quote!()
     } else {
         quote!(
-            const STRUCT_NAME: &'static str = stringify!(#ident);
+            const STRUCT_NAME: &'static str = "";
         )
     };
 
