@@ -120,7 +120,7 @@ fn try_message(input: TokenStream) -> Result<TokenStream, Error> {
             #(#tags)* => {
                 let mut value = &mut self.#field_ident;
                 #merge.map_err(|mut error| {
-                    error.push(STRUCT_NAME, stringify!(#field_ident));
+                    error.push(STRUCT_NAME, "");
                     error
                 })
             },
@@ -217,7 +217,7 @@ fn try_message(input: TokenStream) -> Result<TokenStream, Error> {
         let debugs = unsorted_fields.iter().map(|(field_ident, field)| {
             let wrapper = field.debug(quote!(self.#field_ident));
             let call = if is_struct {
-                quote!(builder.field(stringify!(#field_ident), &wrapper))
+                quote!(builder.field("", &wrapper))
             } else {
                 quote!(builder.field(&wrapper))
             };
@@ -229,9 +229,9 @@ fn try_message(input: TokenStream) -> Result<TokenStream, Error> {
             }
         });
         let debug_builder = if is_struct {
-            quote!(f.debug_struct(stringify!(#ident)))
+            quote!(f.debug_struct(""))
         } else {
-            quote!(f.debug_tuple(stringify!(#ident)))
+            quote!(f.debug_tuple(""))
         };
         quote! {
             #expanded
@@ -472,7 +472,7 @@ fn try_oneof(input: TokenStream) -> Result<TokenStream, Error> {
             {
                 match tag {
                     #(#merge,)*
-                    _ => unreachable!(concat!("invalid ", stringify!(#ident), " tag: {}"), tag),
+                    _ => unreachable!(concat!("invalid ", "", " tag: {}"), tag),
                 }
             }
 
@@ -493,7 +493,7 @@ fn try_oneof(input: TokenStream) -> Result<TokenStream, Error> {
             let wrapper = field.debug(quote!(*value));
             quote!(#ident::#variant_ident(ref value) => {
                 let wrapper = #wrapper;
-                f.debug_tuple(stringify!(#variant_ident))
+                f.debug_tuple("")
                     .field(&wrapper)
                     .finish()
             })
